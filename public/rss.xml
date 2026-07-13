@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Jianglin Ma · Ideas in Visual Form</title>
+    <link>https://example.com/blog</link>
+    <description>Notes on AI agents, LLM applications and knowledge engineering.</description>
+    <item><title>为什么长任务 Agent 需要独立的运行时</title><link>https://example.com/blog/state-driven-agent-runtime</link><pubDate>Thu, 18 Jun 2026 00:00:00 GMT</pubDate></item>
+    <item><title>工具描述并非越长越好</title><link>https://example.com/blog/concise-tool-representations</link><pubDate>Tue, 26 May 2026 00:00:00 GMT</pubDate></item>
+  </channel>
+</rss>
