@@ -66,7 +66,6 @@ function ReactBitsLanyard({
   lanyardImage = null,
   lanyardWidth = 1,
   onContactHotspot = null,
-  onReady = null,
   ropeSegmentLength = 1,
   staticMode = false,
 }) {
@@ -100,7 +99,6 @@ function ReactBitsLanyard({
             lanyardImage={lanyardImage}
             lanyardWidth={lanyardWidth}
             onContactHotspot={onContactHotspot}
-            onReady={onReady}
             ropeSegmentLength={ropeSegmentLength}
             staticMode={staticMode}
           />
@@ -153,7 +151,6 @@ function Band({
   lanyardImage = null,
   lanyardWidth = 1,
   onContactHotspot = null,
-  onReady = null,
   ropeSegmentLength = 1,
   staticMode = false,
 }) {
@@ -163,7 +160,6 @@ function Band({
   const j2 = useRef(null);
   const j3 = useRef(null);
   const card = useRef(null);
-  const didSignalReady = useRef(false);
 
   const vec = new THREE.Vector3();
   const ang = new THREE.Vector3();
@@ -179,12 +175,6 @@ function Band({
   };
   const scaleRatio = cardScale / BASE_CARD_SCALE;
   const cardJointY = CARD_GROUP_OFFSET_Y + (BASE_CARD_JOINT_Y - CARD_GROUP_OFFSET_Y) * scaleRatio;
-
-  useEffect(() => {
-    if (didSignalReady.current) return;
-    didSignalReady.current = true;
-    onReady?.();
-  }, [onReady]);
 
   const getLerped = (body) => {
     const translation = body.translation();

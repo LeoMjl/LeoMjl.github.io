@@ -38,7 +38,7 @@ export function BlogPage() {
         <div className="blog-masonry">
           {visible.map((post, index) => (
             <Link className={`gallery-post gallery-post-${index + 1} reveal-item`} key={post.slug} to={`/blog/${post.slug}`}>
-              <img alt={`${post.title} 封面`} decoding="async" loading="lazy" src={post.cover} />
+              <img alt={`${post.title} 封面`} src={post.cover} />
               <div className="gallery-overlay">
                 <div><span>{post.category}</span><ArrowRight size={19} /></div>
                 <h2>{post.title}</h2>

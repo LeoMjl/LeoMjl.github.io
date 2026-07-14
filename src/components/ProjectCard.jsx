@@ -5,7 +5,7 @@ export function ProjectCard({ project, onOutput }) {
   return (
     <article className="project-card reveal-item">
       <Link className="project-cover" to={`/projects/${project.slug}`}>
-        <img alt={`${project.title} 项目封面`} decoding="async" loading="lazy" src={project.cover} />
+        <img alt={`${project.title} 项目封面`} src={project.cover} />
         <span>{project.typeLabel}</span>
       </Link>
       <div className="project-card-body">
@@ -41,3 +41,4 @@ export function ProjectCard({ project, onOutput }) {
     </article>
   );
 }
+

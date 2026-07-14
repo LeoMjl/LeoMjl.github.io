@@ -69,7 +69,7 @@ export function ProjectCardSwap({ projects, onOutput }) {
               style={{ "--swap-slot": slot }}
               type="button"
             >
-              <img alt="" decoding="async" draggable="false" loading="lazy" src={project.cover} />
+              <img alt="" draggable="false" src={project.cover} />
               <span className="project-swap-number">{String(index + 1).padStart(2, "0")}</span>
               <div>
                 <small>{project.typeLabel}</small>
