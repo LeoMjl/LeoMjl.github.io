@@ -78,7 +78,7 @@ function buildPost(definition) {
     ...definition,
     title,
     summary: sentenceSummary(summarySource),
-    cover: firstImage ? `/blog/${definition.slug}/${webImageName(firstImage)}` : "/assets/project-agent-cli.png",
+    cover: firstImage ? `/blog/${definition.slug}/${webImageName(firstImage)}` : "/assets/project-agent-cli.webp",
     coverRatio: "portrait",
     readingTime: `${Math.max(4, Math.ceil(characterCount / 520))} min`,
     headings,

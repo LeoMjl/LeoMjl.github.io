@@ -53,6 +53,9 @@
 .capability-page-header h1 { margin: 0 0 5px; font-size: clamp(27px, 2.5vw, 40px); line-height: 1; }
 .capability-page-header > div:nth-child(2) > span { color: var(--muted); font-size: 12px; }
 .capability-controls { display: flex; align-items: center; gap: 8px; }
+.capability-view-toggle { display: flex; align-items: center; min-height: 42px; padding: 3px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
+.capability-view-toggle button { display: inline-flex; align-items: center; justify-content: center; gap: 5px; min-width: 54px; height: 34px; padding: 0 8px; border: 0; border-radius: 4px; background: transparent; color: var(--quiet); cursor: pointer; font-family: "IBM Plex Mono", monospace; font-size: 9px; }
+.capability-view-toggle button[aria-pressed="true"] { background: color-mix(in srgb, var(--accent) 15%, var(--surface-strong)); color: var(--accent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 42%, transparent); }
 .capability-control-button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 42px; padding: 0 13px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); color: var(--muted); cursor: pointer; font-size: 11px; font-weight: 600; transition: border-color 180ms ease, color 180ms ease, background 180ms ease; }
 .capability-control-button:hover { border-color: var(--accent); color: var(--ink); background: var(--surface-hover); }
 .capability-search { position: relative; display: flex; align-items: center; gap: 8px; width: 190px; min-height: 42px; padding: 0 11px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
@@ -72,6 +75,23 @@
 .capability-scene::before { content: "SINGLE SHELL / EQUAL NODES"; position: absolute; z-index: 2; top: 20px; left: 20px; color: var(--quiet); font-family: "IBM Plex Mono", monospace; font-size: 8px; pointer-events: none; }
 .knowledge-sphere { position: absolute; inset: 0; }
 .knowledge-sphere canvas { width: 100% !important; height: 100% !important; touch-action: none; }
+.knowledge-graph-2d { position: absolute; inset: 0; }
+.knowledge-graph-2d svg { display: block; width: 100%; height: 100%; cursor: grab; touch-action: none; }
+.knowledge-graph-2d svg:active { cursor: grabbing; }
+.graph-2d-links line { stroke: color-mix(in srgb, var(--accent) 36%, var(--line)); stroke-width: 1.1; vector-effect: non-scaling-stroke; transition: opacity 160ms ease, stroke 160ms ease; }
+.graph-2d-links line.is-highlighted { stroke: var(--accent); stroke-width: 2; }
+.graph-2d-links line.is-dimmed { opacity: .11; }
+.graph-2d-nodes > g { cursor: grab; outline: 0; transition: opacity 160ms ease; }
+.graph-2d-nodes > g:active { cursor: grabbing; }
+.graph-2d-nodes > g.is-dimmed { opacity: .18; }
+.graph-node-glow { opacity: .1; filter: url(#node-glow); }
+.graph-node-dot { stroke: color-mix(in srgb, var(--ink) 76%, transparent); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+.graph-2d-nodes > g.is-selected .graph-node-dot { stroke: var(--ink); stroke-width: 3; }
+.graph-2d-nodes > g.is-selected .graph-node-glow, .graph-2d-nodes > g.is-connected .graph-node-glow { opacity: .28; }
+.graph-node-label { pointer-events: none; }
+.graph-node-label rect { fill: color-mix(in srgb, var(--surface-strong) 90%, transparent); stroke: var(--line-strong); stroke-width: .8; vector-effect: non-scaling-stroke; }
+.graph-node-label text { fill: var(--ink); font-family: "IBM Plex Mono", monospace; font-size: 9px; font-weight: 600; text-anchor: middle; }
+.graph-2d-nodes > g.is-selected .graph-node-label rect { fill: color-mix(in srgb, var(--accent) 16%, var(--surface-strong)); stroke: var(--accent); }
 .sphere-label { display: grid; justify-items: center; min-width: 96px; padding: 4px 7px; border: 1px solid color-mix(in srgb, var(--accent) 36%, transparent); border-radius: 4px; background: color-mix(in srgb, var(--surface-strong) 78%, transparent); color: var(--ink); box-shadow: 0 4px 14px rgba(0,0,0,.12); font-family: "IBM Plex Mono", monospace; font-size: 8px; white-space: nowrap; backdrop-filter: blur(8px); opacity: .82; }
 .sphere-label.is-selected { padding: 6px 9px; border-color: var(--accent); box-shadow: 0 0 20px color-mix(in srgb, var(--accent) 34%, transparent); opacity: 1; }
 .sphere-label small { margin-top: 2px; color: var(--accent); font-size: 7px; }
@@ -134,7 +154,9 @@
   .capability-stats { grid-column: 2; grid-row: 2; align-self: end; }
   .capability-stats span:last-child { display: none; }
   .capability-controls { grid-column: 1 / -1; grid-row: 3; width: 100%; }
-  .capability-search { flex: 1; width: auto; }
+  .capability-search { flex: 1; width: auto; min-width: 0; }
+  .capability-view-toggle button { min-width: 40px; padding: 0 6px; }
+  .capability-view-toggle button span { display: none; }
   .capability-control-button { width: 42px; padding: 0; }
   .capability-control-button span { display: none; }
   .capability-workspace { display: block; position: relative; min-height: 530px; border-bottom: 1px solid var(--line-strong); }
@@ -238,9 +260,12 @@ h1, h2, h3 { font-family: "Space Grotesk", Inter, sans-serif; font-weight: 600; 
 .availability { display: inline-flex; align-items: center; gap: 10px; color: var(--muted); font-size: 14px; }
 .availability i { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 14px var(--green); }
 .hero-lanyard { position: absolute; z-index: 3; top: 0; right: 20px; width: min(650px, 48vw); height: 802px; }
-.react-bits-lanyard { position: absolute; inset: 0; }
+.react-bits-lanyard { position: absolute; z-index: 2; inset: 0; opacity: 0; pointer-events: none; transition: opacity 320ms ease; }
+.hero-lanyard.is-physics-ready .react-bits-lanyard { opacity: 1; pointer-events: auto; }
 .react-bits-lanyard canvas { width: 100% !important; height: 100% !important; }
 .lanyard-loading { position: absolute; inset: 0; display: grid; place-items: center; color: var(--quiet); font-family: "IBM Plex Mono", monospace; font-size: 11px; }
+.fast-lanyard { z-index: 1; opacity: 1; transition: opacity 260ms ease; }
+.hero-lanyard.is-physics-ready .fast-lanyard { opacity: 0; pointer-events: none; }
 .lanyard-dom-pendulum { position: absolute; top: 0; left: 62%; width: 340px; height: 760px; transform: translateX(-50%); }
 .lanyard-dom-rope { position: absolute; z-index: 2; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
 .lanyard-dom-rope path { fill: none; vector-effect: non-scaling-stroke; }
@@ -253,6 +278,21 @@ h1, h2, h3 { font-family: "Space Grotesk", Inter, sans-serif; font-weight: 600; 
 .lanyard-dom-pendulum.is-dragging .lanyard-dom-card { box-shadow: 0 34px 80px rgba(20,30,70,.32); }
 .lanyard-dom-card:active { cursor: grabbing; }
 .lanyard-dom-card img { display: block; width: 100%; height: 100%; object-fit: cover; user-select: none; }
+.fast-id-card { position: relative; width: 100%; height: 100%; padding: 17px 17px 15px; border: 1px solid var(--line-strong); border-radius: 15px; background: var(--surface-strong); color: var(--ink); text-align: left; box-shadow: inset 0 0 0 7px color-mix(in srgb, var(--surface) 86%, transparent); overflow: hidden; }
+.fast-id-card::after { content: ""; position: absolute; inset: 0; background: linear-gradient(130deg, color-mix(in srgb, var(--accent) 10%, transparent), transparent 42%, color-mix(in srgb, var(--purple) 9%, transparent)); pointer-events: none; }
+.fast-id-card-accent { position: absolute; z-index: 2; top: 0; left: 0; right: 0; display: grid; grid-template-columns: 64% 36%; height: 4px; }
+.fast-id-card-accent i:first-child { background: var(--accent); }
+.fast-id-card-accent i:last-child { background: var(--purple); }
+.fast-id-card-top { position: relative; z-index: 2; display: flex; justify-content: space-between; margin: 2px 0 13px; color: var(--quiet); font-family: "IBM Plex Mono", monospace; font-size: 7px; font-weight: 600; }
+.fast-id-card > img { position: relative; z-index: 1; width: 100%; height: 193px; border: 1px solid var(--line); border-radius: 7px; object-position: center top; }
+.fast-id-card-copy { position: relative; z-index: 2; display: grid; padding-top: 11px; }
+.fast-id-card-copy > strong { font-family: "Space Grotesk", sans-serif; font-size: 22px; line-height: 1; }
+.fast-id-card-copy > b { margin-top: 3px; color: var(--accent); font-size: 17px; }
+.fast-id-card-copy h3 { margin: 8px 0 2px; font-size: 13px; }
+.fast-id-card-copy p { margin: 0; color: var(--muted); font-size: 8px; line-height: 1.4; }
+.fast-id-availability { display: flex; align-items: center; gap: 8px; margin: 10px 0 8px; padding: 8px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); font-family: "IBM Plex Mono", monospace; font-size: 7px; font-weight: 600; }
+.fast-id-availability i { width: 18px; height: 9px; border-bottom: 2px solid var(--accent); transform: skewX(-38deg); }
+.fast-id-card-copy small { margin-bottom: 2px; color: var(--quiet); font-family: "IBM Plex Mono", monospace; font-size: 6px; font-weight: 600; }
 .hero-rail { position: absolute; z-index: 7; left: 44px; right: 44px; bottom: 28px; display: grid; grid-template-columns: repeat(3, 1fr) 1.7fr; min-height: 180px; border: 1px solid var(--line); border-radius: 10px; background: color-mix(in srgb, var(--surface-strong) 84%, transparent); box-shadow: var(--shadow); backdrop-filter: blur(16px); overflow: hidden; }
 .rail-focus { display: grid; grid-template-columns: 34px 1fr; gap: 16px; align-content: center; min-width: 0; padding: 24px; border-right: 1px solid var(--line); }
 .rail-focus svg { color: var(--accent); }

@@ -1,6 +1,7 @@
-import { ArrowLeft, ArrowsClockwise, MagnifyingGlass, Pause, Play, X } from "@phosphor-icons/react";
+import { ArrowLeft, ArrowsClockwise, Cube, Graph, MagnifyingGlass, Pause, Play, X } from "@phosphor-icons/react";
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
+import { KnowledgeGraph2D } from "../components/KnowledgeGraph2D";
 import { blogPosts } from "../data/blogPosts";
 import { capabilityBySlug } from "../data/capabilities";
 import { projects } from "../data/portfolio";
@@ -54,6 +55,7 @@ export function CapabilityPage() {
   const [manualPaused, setManualPaused] = useState(false);
   const [interactionPaused, setInteractionPaused] = useState(false);
   const [resetSignal, setResetSignal] = useState(0);
+  const [viewMode, setViewMode] = useState("2d");
   const [mobileDetailOpen, setMobileDetailOpen] = useState(false);
   const resumeTimer = useRef(null);
 
@@ -118,6 +120,10 @@ export function CapabilityPage() {
         <Link className="capability-back" to="/#focus"><ArrowLeft size={18} /> 能力领域</Link>
         <div><p className="signal-label">CAPABILITY KNOWLEDGE MAP / {capability.number}</p><h1>{capability.title}</h1><span>{capability.description}</span></div>
         <div className="capability-controls">
+          <div className="capability-view-toggle" aria-label="图谱视图模式">
+            <button aria-pressed={viewMode === "2d"} onClick={() => setViewMode("2d")} title="轻量力导向图" type="button"><Graph size={17} /><span>2D</span></button>
+            <button aria-pressed={viewMode === "3d"} onClick={() => setViewMode("3d")} title="三维知识球" type="button"><Cube size={17} /><span>3D</span></button>
+          </div>
           <div className="capability-search">
             <MagnifyingGlass size={17} />
             <input aria-label="搜索知识节点" onChange={(event) => setQuery(event.target.value)} placeholder="搜索节点" value={query} />
@@ -130,11 +136,15 @@ export function CapabilityPage() {
       </header>
 
       <div className={`capability-workspace${mobileDetailOpen ? " is-detail-open" : ""}`}>
-        <section className="capability-scene" tabIndex="0" aria-label={`${capability.title} 三维知识图谱，拖动旋转，滚轮缩放`}>
-          <Suspense fallback={<div className="sphere-loading"><i />BUILDING KNOWLEDGE SPHERE...</div>}>
-            <KnowledgeSphere capability={capability} manualPaused={manualPaused || interactionPaused} onHover={() => undefined} onInteraction={handleInteraction} onSelect={selectNode} resetSignal={resetSignal} selectedId={selectedId} />
-          </Suspense>
-          <div className="capability-scene-hint">DRAG TO ROTATE · SCROLL TO ZOOM · DOUBLE CLICK TO RESET</div>
+        <section className="capability-scene" tabIndex="0" aria-label={`${capability.title} ${viewMode === "2d" ? "力导向" : "三维"}知识图谱`}>
+          {viewMode === "2d" ? (
+            <KnowledgeGraph2D capability={capability} manualPaused={manualPaused || interactionPaused} onInteraction={handleInteraction} onSelect={selectNode} resetSignal={resetSignal} selectedId={selectedId} />
+          ) : (
+            <Suspense fallback={<div className="sphere-loading"><i />BUILDING 3D VIEW ON DEMAND...</div>}>
+              <KnowledgeSphere capability={capability} manualPaused={manualPaused || interactionPaused} onHover={() => undefined} onInteraction={handleInteraction} onSelect={selectNode} resetSignal={resetSignal} selectedId={selectedId} />
+            </Suspense>
+          )}
+          <div className="capability-scene-hint">{viewMode === "2d" ? "DRAG NODES · DRAG BACKGROUND · SCROLL TO ZOOM" : "DRAG TO ROTATE · SCROLL TO ZOOM · DOUBLE CLICK TO RESET"}</div>
         </section>
         <DetailPanel capability={capability} node={selectedNode} onClose={() => setMobileDetailOpen(false)} />
       </div>

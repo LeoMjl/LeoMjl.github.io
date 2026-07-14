@@ -119,7 +119,7 @@ export function CircularBlogGallery({ posts }) {
               tabIndex={isActive ? 0 : -1}
               to={`/blog/${post.slug}`}
             >
-              <img alt="" draggable="false" src={post.cover} />
+              <img alt="" decoding="async" draggable="false" loading="lazy" src={post.cover} />
               <span className="circular-card-index">{String(index + 1).padStart(2, "0")}</span>
               <div className="circular-card-copy">
                 <span>{post.category}</span>

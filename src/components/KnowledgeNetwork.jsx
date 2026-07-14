@@ -7,6 +7,7 @@ const previewNodes = [
   [18, 50], [48, 24], [78, 42], [53, 68], [89, 76], [22, 82], [70, 91],
 ];
 const previewLinks = [[0, 1], [1, 2], [0, 3], [3, 4], [3, 5], [5, 6], [2, 6]];
+const preloadCapabilityPage = () => import("../pages/CapabilityPage");
 
 function NetworkPreview({ index }) {
   return (
@@ -31,7 +32,7 @@ export function KnowledgeNetwork() {
       {capabilities.map((capability, index) => {
         const Icon = icons[capability.icon];
         return (
-          <Link className="focus-card capability-entry-card reveal-item" key={capability.slug} to={`/capabilities/${capability.slug}`}>
+          <Link className="focus-card capability-entry-card reveal-item" key={capability.slug} onFocus={preloadCapabilityPage} onPointerEnter={preloadCapabilityPage} to={`/capabilities/${capability.slug}`}>
             <span className="capability-number">{capability.number}</span>
             <Icon className="capability-icon" size={31} weight="duotone" />
             <NetworkPreview index={index} />

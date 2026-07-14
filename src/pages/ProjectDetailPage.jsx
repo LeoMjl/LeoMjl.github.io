@@ -46,7 +46,7 @@ export function ProjectDetailPage() {
         <div className="responsibility-list">{project.contributions.map((item) => <div key={item}><CheckCircle size={22} weight="duotone" /><span>{item}</span></div>)}</div>
       </section>
       <section className="architecture-section reveal-item" id="architecture">
-        <img alt={`${project.title} 系统与数据流示意`} src={project.cover} />
+        <img alt={`${project.title} 系统与数据流示意`} decoding="async" loading="lazy" src={project.cover} />
         <div><p className="signal-label">SYSTEM ARCHITECTURE</p><h2>From state to decision to verified action.</h2><p>{project.solution}</p><div className="tag-list">{project.technologies.map((item) => <span key={item}>{item}</span>)}</div></div>
       </section>
       <section className="detail-section reveal-item">
@@ -57,4 +57,3 @@ export function ProjectDetailPage() {
     </article>
   );
 }
-

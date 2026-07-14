@@ -35,10 +35,12 @@ function SectionHeading({ eyebrow, title, description }) {
 
 function useGithubRepos() {
   const [repos, setRepos] = useState(githubFallback);
-  const [status, setStatus] = useState("loading");
 
   useEffect(() => {
     let alive = true;
+    let refreshTimer;
+    let requestTimer;
+    let controller;
     const cacheKey = "github-repos-leomjl-v3";
     let cached = null;
     try {
@@ -52,41 +54,51 @@ function useGithubRepos() {
       && Date.now() - cached.savedAt < 60 * 60 * 1000;
     if (hasValidCache) {
       setRepos(cached.data);
-      setStatus("loaded");
       return undefined;
     }
-    fetch("https://api.github.com/users/LeoMjl/repos?sort=updated&per_page=100")
-      .then((response) => {
-        if (!response.ok) throw new Error("GitHub request failed");
-        return response.json();
-      })
-      .then((data) => {
-        if (!alive || !Array.isArray(data) || !data.length) return;
-        const normalized = data.map((repo, index) => {
-          const signals = [repo.name, repo.description, ...(repo.topics || [])].join(" ").toLowerCase();
-          const category = signals.includes("memory") || signals.includes("agent") || signals.includes("ai_")
-            ? "AI Agent"
-            : signals.includes("llm")
-              ? "LLM"
-              : repo.language === "TypeScript"
-                ? "Web"
-                : "Research";
-          return { ...repo, category, featured: index < 3 };
-        });
-        setRepos(normalized);
-        localStorage.setItem(cacheKey, JSON.stringify({ savedAt: Date.now(), data: normalized }));
-      })
-      .catch(() => setRepos(githubFallback))
-      .finally(() => alive && setStatus("loaded"));
+
+    const refreshRepos = () => {
+      if (!alive) return;
+      controller = new AbortController();
+      requestTimer = window.setTimeout(() => controller.abort(), 5000);
+      fetch("https://api.github.com/users/LeoMjl/repos?sort=updated&per_page=100", { signal: controller.signal })
+        .then((response) => {
+          if (!response.ok) throw new Error("GitHub request failed");
+          return response.json();
+        })
+        .then((data) => {
+          if (!alive || !Array.isArray(data) || !data.length) return;
+          const normalized = data.map((repo, index) => {
+            const signals = [repo.name, repo.description, ...(repo.topics || [])].join(" ").toLowerCase();
+            const category = signals.includes("memory") || signals.includes("agent") || signals.includes("ai_")
+              ? "AI Agent"
+              : signals.includes("llm")
+                ? "LLM"
+                : repo.language === "TypeScript"
+                  ? "Web"
+                  : "Research";
+            return { ...repo, category, featured: index < 3 };
+          });
+          setRepos(normalized);
+          localStorage.setItem(cacheKey, JSON.stringify({ savedAt: Date.now(), data: normalized }));
+        })
+        .catch(() => undefined)
+        .finally(() => clearTimeout(requestTimer));
+    };
+
+    refreshTimer = window.setTimeout(refreshRepos, 7000);
     return () => {
       alive = false;
+      clearTimeout(refreshTimer);
+      clearTimeout(requestTimer);
+      controller?.abort();
     };
   }, []);
-  return { repos, status };
+  return repos;
 }
 
 function GithubSection() {
-  const { repos, status } = useGithubRepos();
+  const repos = useGithubRepos();
   const [filter, setFilter] = useState("All");
   const [sort, setSort] = useState("Featured");
   const visible = useMemo(() => {
@@ -115,9 +127,6 @@ function GithubSection() {
           </select>
         </label>
       </div>
-      {status === "loading" ? (
-        <div className="terminal-loader reveal-item"><span>Fetching repositories...</span><span>Reading project metadata...</span><span className="blink">Repositories loading.</span></div>
-      ) : null}
       <div className="repo-grid">
         {visible.map((repo) => (
           <article className="repo-card" key={repo.id}>
@@ -161,7 +170,7 @@ export function HomePage() {
       </section>
 
       <section className="content-section focus-section" id="focus">
-        <SectionHeading eyebrow="PROFESSIONAL FOCUS / 01" title="Turning research into reliable AI systems" description="选择一个能力方向，进入可旋转、可缩放的 3D 知识球，探索方法、工具、项目与成果之间的关系。" />
+        <SectionHeading eyebrow="PROFESSIONAL FOCUS / 01" title="Turning research into reliable AI systems" description="选择一个能力方向，进入可拖拽、可缩放的知识图谱，探索方法、工具、项目与成果之间的关系。" />
         <KnowledgeNetwork />
       </section>
 
