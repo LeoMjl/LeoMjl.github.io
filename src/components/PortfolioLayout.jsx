@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { ArrowRight, List, Moon, Sun, X } from "@phosphor-icons/react";
-import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import { navigation, profile } from "../data/portfolio";
 import { useTheme } from "../hooks/useTheme.jsx";
 import { DynamicBackground } from "./DynamicBackground";
@@ -8,6 +8,7 @@ import { DynamicBackground } from "./DynamicBackground";
 export function PortfolioLayout() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [activeHomeHref, setActiveHomeHref] = useState("/");
   const location = useLocation();
   const { cycleTheme, mode, resolvedTheme } = useTheme();
 
@@ -23,6 +24,45 @@ export function PortfolioLayout() {
     window.scrollTo({ top: 0, behavior: "auto" });
   }, [location.pathname]);
 
+  useEffect(() => {
+    if (location.pathname !== "/") return undefined;
+
+    const sectionMap = [
+      { id: "home", href: "/" },
+      { id: "selected-projects", href: "/projects" },
+      { id: "project-experience", href: "/experience" },
+      { id: "ideas", href: "/blog" },
+    ];
+    let frameId = 0;
+
+    const updateActiveSection = () => {
+      frameId = 0;
+      const readingLine = window.scrollY + Math.min(window.innerHeight * 0.34, 280);
+      let nextHref = "/";
+      sectionMap.forEach(({ id, href }) => {
+        const section = document.getElementById(id);
+        if (section && section.offsetTop <= readingLine) nextHref = href;
+      });
+      setActiveHomeHref((current) => current === nextHref ? current : nextHref);
+    };
+
+    const requestUpdate = () => {
+      if (!frameId) frameId = window.requestAnimationFrame(updateActiveSection);
+    };
+
+    updateActiveSection();
+    window.addEventListener("scroll", requestUpdate, { passive: true });
+    window.addEventListener("resize", requestUpdate);
+    return () => {
+      window.removeEventListener("scroll", requestUpdate);
+      window.removeEventListener("resize", requestUpdate);
+      if (frameId) window.cancelAnimationFrame(frameId);
+    };
+  }, [location.pathname]);
+
+  const routeHref = navigation.find((item) => item.href !== "/" && (location.pathname === item.href || location.pathname.startsWith(`${item.href}/`)))?.href;
+  const activeHref = location.pathname === "/" ? activeHomeHref : routeHref;
+
   const themeLabel = mode === "system" ? `跟随系统，当前${resolvedTheme === "dark" ? "深色" : "浅色"}` : `${mode === "dark" ? "深色" : "浅色"}主题`;
 
   return (
@@ -36,9 +76,9 @@ export function PortfolioLayout() {
 
         <nav aria-label="主要导航" className={menuOpen ? "primary-nav is-open" : "primary-nav"}>
           {navigation.map((item) => (
-            <NavLink end={item.href === "/"} key={item.href} to={item.href}>
+            <Link aria-current={activeHref === item.href ? "page" : undefined} className={activeHref === item.href ? "active" : undefined} key={item.href} to={item.href}>
               {item.label}
-            </NavLink>
+            </Link>
           ))}
         </nav>
 
