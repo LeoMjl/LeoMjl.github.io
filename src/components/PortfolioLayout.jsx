@@ -21,14 +21,15 @@ export function PortfolioLayout() {
 
   useEffect(() => {
     setMenuOpen(false);
-    window.scrollTo({ top: 0, behavior: "auto" });
-  }, [location.pathname]);
+    if (!location.hash) window.scrollTo({ top: 0, behavior: "auto" });
+  }, [location.hash, location.pathname]);
 
   useEffect(() => {
     if (location.pathname !== "/") return undefined;
 
     const sectionMap = [
       { id: "home", href: "/" },
+      { id: "focus", href: "/#focus" },
       { id: "selected-projects", href: "/projects" },
       { id: "project-experience", href: "/experience" },
       { id: "ideas", href: "/blog" },

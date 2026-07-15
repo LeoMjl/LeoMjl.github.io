@@ -6,7 +6,7 @@ import {
   GithubLogo,
   Star,
 } from "@phosphor-icons/react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { CircularBlogGallery } from "../components/CircularBlogGallery";
 import { KnowledgeNetwork } from "../components/KnowledgeNetwork";
 import { ProjectCardSwap } from "../components/ProjectCardSwap";
@@ -139,8 +139,25 @@ function GithubSection() {
 
 export function HomePage() {
   const [activeOutput, setActiveOutput] = useState(null);
+  const location = useLocation();
   useReveal(activeOutput?.id || "home");
   const featuredProjects = projects.filter((project) => project.featured).slice(0, 3);
+
+  useEffect(() => {
+    if (!location.hash) return undefined;
+    const sectionId = decodeURIComponent(location.hash.slice(1));
+    const timerId = window.setTimeout(() => {
+      const section = document.getElementById(sectionId);
+      if (!section) return;
+      const top = section.getBoundingClientRect().top + window.scrollY - 96;
+      const root = document.documentElement;
+      const previousScrollBehavior = root.style.scrollBehavior;
+      root.style.scrollBehavior = "auto";
+      window.scrollTo(0, Math.max(0, top));
+      root.style.scrollBehavior = previousScrollBehavior;
+    }, 0);
+    return () => clearTimeout(timerId);
+  }, [location.hash]);
 
   return (
     <>
