@@ -14,17 +14,17 @@ const CapabilityPage = lazy(() => import("./pages/CapabilityPage").then((module)
 
 const titles = {
   "/": `${profile.name} | 大模型应用开发工程师`,
-  "/projects": `Projects | ${profile.englishName}`,
-  "/experience": `Experience | ${profile.englishName}`,
-  "/blog": `Ideas | ${profile.englishName}`,
-  "/resume": `Resume & Contact | ${profile.englishName}`,
+  "/projects": `项目 | ${profile.name}`,
+  "/experience": `经历 | ${profile.name}`,
+  "/blog": `博客 | ${profile.name}`,
+  "/resume": `简历与联系 | ${profile.name}`,
 };
 
 function SeoSync() {
   const location = useLocation();
   useEffect(() => {
     const project = projects.find((item) => location.pathname === `/projects/${item.slug}`);
-    document.title = project ? `${project.title} | ${profile.englishName}` : titles[location.pathname] || `${profile.englishName} Portfolio`;
+    document.title = project ? `${project.title} | ${profile.name}` : titles[location.pathname] || `${profile.name}的个人作品集`;
     const description = document.querySelector('meta[name="description"]');
     description?.setAttribute("content", project?.description || "马江霖的 AI Agent、大模型应用、知识工程项目与研究作品集。" );
   }, [location.pathname]);
@@ -44,7 +44,7 @@ export function App() {
           <Route path="blog" element={<BlogPage />} />
           <Route path="blog/:slug" element={<BlogPostPage />} />
           <Route path="resume" element={<ResumePage />} />
-          <Route path="capabilities/:slug" element={<Suspense fallback={<div className="route-loading">LOADING KNOWLEDGE MAP...</div>}><CapabilityPage /></Suspense>} />
+          <Route path="capabilities/:slug" element={<Suspense fallback={<div className="route-loading">正在加载知识图谱...</div>}><CapabilityPage /></Suspense>} />
           <Route path="*" element={<Navigate replace to="/" />} />
         </Route>
       </Routes>

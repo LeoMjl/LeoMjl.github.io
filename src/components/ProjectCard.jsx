@@ -20,17 +20,17 @@ export function ProjectCard({ project, onOutput }) {
         </div>
         <p>{project.description}</p>
         <dl className="project-essentials">
-          <div><dt>Role</dt><dd>{project.role}</dd></div>
-          <div><dt>Contribution</dt><dd>{project.contributions[0]}</dd></div>
+          <div><dt>我的角色</dt><dd>{project.role}</dd></div>
+          <div><dt>核心贡献</dt><dd>{project.contributions[0]}</dd></div>
         </dl>
         <div className="tag-list">{project.technologies.map((technology) => <span key={technology}>{technology}</span>)}</div>
         <div className="project-links">
           {project.githubUrl ? <a href={project.githubUrl} rel="noreferrer" target="_blank"><GithubLogo size={17} /> GitHub</a> : null}
-          <Link to={`/projects/${project.slug}`}>View Project <ArrowRight size={16} /></Link>
+          <Link to={`/projects/${project.slug}`}>查看项目 <ArrowRight size={16} /></Link>
         </div>
       </div>
       <div className="output-strip">
-        <span>Outputs</span>
+        <span>成果</span>
         {project.outputs.slice(0, 2).map((output) => (
           <button key={output.id} onClick={() => onOutput(output)} type="button">
             <small>{output.type}</small>{output.title}<ArrowRight size={14} />

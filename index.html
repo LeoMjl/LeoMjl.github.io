@@ -12,6 +12,25 @@
     <meta property="og:image" content="/assets/hero-portrait-rain.png" />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="alternate" type="application/rss+xml" title="Jianglin Ma Ideas" href="/rss.xml" />
+    <link rel="preload" as="image" href="/assets/contact-id-photo.jpg" fetchpriority="high" />
+    <script>
+      (() => {
+        try {
+          const saved = localStorage.getItem("jianglin-portfolio-theme") || "system";
+          const theme = saved === "system"
+            ? (matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark")
+            : saved;
+          document.documentElement.dataset.theme = theme;
+          document.documentElement.style.colorScheme = theme;
+          if (sessionStorage.getItem("portfolio-entered") === "true") {
+            document.documentElement.dataset.portfolioEntered = "true";
+          }
+        } catch {
+          document.documentElement.dataset.theme = "dark";
+          document.documentElement.style.colorScheme = "dark";
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

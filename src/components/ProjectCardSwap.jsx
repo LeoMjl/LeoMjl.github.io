@@ -36,21 +36,21 @@ export function ProjectCardSwap({ projects, onOutput }) {
         </div>
 
         <dl className="project-swap-facts">
-          <div><dt>Role</dt><dd>{activeProject.role}</dd></div>
-          <div><dt>Period</dt><dd>{activeProject.period}</dd></div>
-          <div><dt>Focus</dt><dd>{activeProject.contributions[0]}</dd></div>
+          <div><dt>我的角色</dt><dd>{activeProject.role}</dd></div>
+          <div><dt>项目周期</dt><dd>{activeProject.period}</dd></div>
+          <div><dt>工作重点</dt><dd>{activeProject.contributions[0]}</dd></div>
         </dl>
 
         <div className="tag-list">{activeProject.technologies.map((technology) => <span key={technology}>{technology}</span>)}</div>
 
         <div className="project-swap-actions">
-          <Link className="button button-primary" to={`/projects/${activeProject.slug}`}>View Project <ArrowRight size={17} /></Link>
+          <Link className="button button-primary" to={`/projects/${activeProject.slug}`}>查看项目 <ArrowRight size={17} /></Link>
           {activeProject.githubUrl ? <a className="button button-secondary" href={activeProject.githubUrl} rel="noreferrer" target="_blank"><GithubLogo size={17} /> GitHub</a> : null}
         </div>
 
         {activeProject.outputs.length ? (
           <div className="project-swap-outputs">
-            <span>OUTPUTS</span>
+            <span>成果输出</span>
             {activeProject.outputs.slice(0, 2).map((output) => <button key={output.id} onClick={() => onOutput(output)} type="button">{output.title}<ArrowRight size={14} /></button>)}
           </div>
         ) : null}

@@ -36,11 +36,11 @@ export function KnowledgeNetwork() {
             <Icon className="capability-icon" size={31} weight="duotone" />
             <NetworkPreview index={index} />
             <div className="capability-card-copy">
-              <p>{capability.titleZh}</p>
-              <h3>{capability.title}</h3>
+              <p>{capability.title}</p>
+              <h3>{capability.titleZh}</h3>
               <span>{capability.description}</span>
             </div>
-            <strong className="capability-card-link">Explore Knowledge Map <ArrowUpRight size={16} /></strong>
+            <strong className="capability-card-link">探索知识图谱 <ArrowUpRight size={16} /></strong>
           </Link>
         );
       })}

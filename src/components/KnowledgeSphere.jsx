@@ -58,8 +58,8 @@ function SphereNode({ connected, dimmed, node, onHover, onSelect, selected }) {
       </mesh>
       {visibleLabel ? (
         <Html center className={`sphere-label${selected ? " is-selected" : ""}`} distanceFactor={9.5} style={{ pointerEvents: "none" }}>
-          <span>{node.name}</span>
-          {selected ? <small>{node.nameZh}</small> : null}
+          <span>{node.nameZh}</span>
+          {selected ? <small>{node.name}</small> : null}
         </Html>
       ) : null}
     </group>
@@ -183,7 +183,7 @@ function FallbackGraph({ capability, onSelect, selectedId }) {
   });
   const map = new Map(points.map((node) => [node.id, node]));
   return (
-    <svg aria-label={`${capability.title} 2D knowledge map`} className="sphere-fallback" viewBox={`0 0 ${size} ${size}`}>
+    <svg aria-label={`${capability.titleZh}二维知识图谱`} className="sphere-fallback" viewBox={`0 0 ${size} ${size}`}>
       <circle className="sphere-fallback-shell" cx={center} cy={center} r={radius + 24} />
       {capability.links.map((link) => {
         const source = map.get(link.source); const target = map.get(link.target);
@@ -192,7 +192,7 @@ function FallbackGraph({ capability, onSelect, selectedId }) {
       {points.map((node) => (
         <g className={selectedId === node.id ? "is-selected" : ""} key={node.id} onClick={() => onSelect(node.id)} role="button" tabIndex="0" transform={`translate(${node.x} ${node.y})`}>
           <circle fill={node.color} r={selectedId === node.id ? 9 : 6} />
-          {node.importance >= 3 || selectedId === node.id ? <text y="-13">{node.name}</text> : null}
+          {node.importance >= 3 || selectedId === node.id ? <text y="-13">{node.nameZh}</text> : null}
         </g>
       ))}
     </svg>

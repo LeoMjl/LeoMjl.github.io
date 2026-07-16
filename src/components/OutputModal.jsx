@@ -2,12 +2,12 @@ import { useEffect, useRef } from "react";
 import { ArrowSquareOut, X } from "@phosphor-icons/react";
 
 const typeLabels = {
-  paper: "PAPER",
-  patent: "PATENT",
-  report: "REPORT",
-  software: "SOFTWARE",
-  demo: "DEMO",
-  dataset: "DATASET",
+  paper: "论文",
+  patent: "专利",
+  report: "报告",
+  software: "软件",
+  demo: "演示",
+  dataset: "数据集",
 };
 
 export function OutputModal({ output, onClose }) {
@@ -59,26 +59,25 @@ export function OutputModal({ output, onClose }) {
         </div>
         {output.authors?.length ? <p className="output-authors">{output.authors.join(", ")}</p> : null}
         <div className="modal-section">
-          <h3>{output.type === "patent" ? "Core Idea" : "Abstract"}</h3>
+          <h3>{output.type === "patent" ? "核心思路" : "成果摘要"}</h3>
           <p>{output.summary}</p>
         </div>
         {output.contribution?.length ? (
           <div className="modal-section">
-            <h3>My Contribution</h3>
+            <h3>我的贡献</h3>
             <ul>{output.contribution.map((item) => <li key={item}>{item}</li>)}</ul>
           </div>
         ) : null}
         <div className="modal-section related-project">
-          <h3>Related Project</h3>
+          <h3>关联项目</h3>
           <p>{output.relatedProject}</p>
         </div>
         <div className="modal-actions">
-          {output.paperUrl ? <a className="button button-primary" href={output.paperUrl} rel="noreferrer" target="_blank">View Paper <ArrowSquareOut size={17} /></a> : null}
-          {output.codeUrl ? <a className="button button-secondary" href={output.codeUrl} rel="noreferrer" target="_blank">View Code <ArrowSquareOut size={17} /></a> : null}
+          {output.paperUrl ? <a className="button button-primary" href={output.paperUrl} rel="noreferrer" target="_blank">查看论文 <ArrowSquareOut size={17} /></a> : null}
+          {output.codeUrl ? <a className="button button-secondary" href={output.codeUrl} rel="noreferrer" target="_blank">查看代码 <ArrowSquareOut size={17} /></a> : null}
           {!output.isPublic ? <span className="private-note">非公开成果仅展示摘要信息</span> : null}
         </div>
       </section>
     </div>
   );
 }
-

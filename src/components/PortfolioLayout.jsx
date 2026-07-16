@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { ArrowRight, List, Moon, Sun, X } from "@phosphor-icons/react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { navigation, profile } from "../data/portfolio";
+import { markPortfolioEntered } from "../hooks/useEntryState";
 import { useTheme } from "../hooks/useTheme.jsx";
 import { DynamicBackground } from "./DynamicBackground";
 
@@ -22,6 +23,7 @@ export function PortfolioLayout() {
   useEffect(() => {
     setMenuOpen(false);
     if (!location.hash) window.scrollTo({ top: 0, behavior: "auto" });
+    if (location.pathname !== "/") markPortfolioEntered();
   }, [location.hash, location.pathname]);
 
   useEffect(() => {
@@ -89,7 +91,7 @@ export function PortfolioLayout() {
             {resolvedTheme === "dark" ? <Moon size={19} weight="duotone" /> : <Sun size={19} weight="duotone" />}
           </button>
           <Link className="button button-secondary resume-button" to="/resume">
-            Get Resume <ArrowRight size={17} weight="bold" />
+            获取简历 <ArrowRight size={17} weight="bold" />
           </Link>
           <button className="icon-button menu-toggle" onClick={() => setMenuOpen((value) => !value)} type="button" aria-label={menuOpen ? "关闭菜单" : "打开菜单"}>
             {menuOpen ? <X size={21} /> : <List size={21} />}
@@ -104,11 +106,11 @@ export function PortfolioLayout() {
       <footer className="site-footer">
         <div>
           <strong>{profile.englishName}</strong>
-          <span>Agent systems · LLM applications · Knowledge engineering</span>
+          <span>智能体系统 · 大模型应用 · 知识工程</span>
         </div>
         <div className="footer-links">
           <a href={profile.github} rel="noreferrer" target="_blank">GitHub</a>
-          <Link to="/resume">Contact</Link>
+          <Link to="/resume">联系我</Link>
           <span>© 2026</span>
         </div>
       </footer>

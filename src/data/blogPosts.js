@@ -80,7 +80,7 @@ function buildPost(definition) {
     summary: sentenceSummary(summarySource),
     cover: firstImage ? `/blog/${definition.slug}/${webImageName(firstImage)}` : "/assets/project-agent-cli.png",
     coverRatio: "portrait",
-    readingTime: `${Math.max(4, Math.ceil(characterCount / 520))} min`,
+    readingTime: `${Math.max(4, Math.ceil(characterCount / 520))} 分钟`,
     headings,
     markdown,
   };

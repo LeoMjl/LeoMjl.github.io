@@ -146,7 +146,7 @@ export function HeroLanyard() {
           ropeSegmentLength={1.05}
         />
       ) : (
-        <div className="lanyard-loading">IDENTITY SIGNAL CONNECTING...</div>
+        <div className="lanyard-loading">身份卡加载中...</div>
       )}
     </div>
   );

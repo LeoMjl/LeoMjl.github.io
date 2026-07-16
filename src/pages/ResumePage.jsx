@@ -51,7 +51,7 @@ export function ResumePage() {
     <div className="resume-page route-page">
       <div className="resume-intro">
         <p className="signal-label">RESUME REQUEST / 04</p>
-        <h1>Let’s Build Something Meaningful</h1>
+        <h1>期待与你一起创造有价值的成果</h1>
         <p>
           如需查看完整简历，请留下您的联系方式与联系目的。信息仅用于本次简历获取与后续沟通，
           不会在公开页面展示。
@@ -119,7 +119,7 @@ export function ResumePage() {
             <fieldset>
               <legend>简历语言</legend>
               <label className="radio-label"><input defaultChecked name="language" type="radio" value="zh" />中文</label>
-              <label className="radio-label"><input name="language" type="radio" value="en" />English</label>
+              <label className="radio-label"><input name="language" type="radio" value="en" />英文</label>
             </fieldset>
             <label>
               <span>简短留言（可选）</span>

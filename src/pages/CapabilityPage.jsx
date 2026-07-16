@@ -10,6 +10,7 @@ const KnowledgeSphere = lazy(() => import("../components/KnowledgeSphere").then(
 const relationLabels = {
   contains: "包含", depends_on: "依赖", works_with: "协同", supports: "支撑", validates: "验证",
 };
+const outputTypeLabels = { paper: "论文", patent: "专利", report: "报告", software: "软件", demo: "演示", dataset: "数据集" };
 
 function resolveOutput(outputId) {
   for (const project of projects) {
@@ -29,8 +30,8 @@ function DetailPanel({ capability, node, onClose }) {
       <button aria-label="关闭详情" className="capability-detail-close" onClick={onClose} type="button"><X size={19} /></button>
       <div className="capability-detail-scroll" key={node?.id || capability.slug}>
         <p className="signal-label">{node ? `${node.categoryLabel} / SELECTED NODE` : "DOMAIN OVERVIEW"}</p>
-        <h2>{node?.name || capability.title}</h2>
-        <h3>{node?.nameZh || capability.titleZh}</h3>
+        <h2>{node?.nameZh || capability.titleZh}</h2>
+        <h3>{node?.name || capability.title}</h3>
         <p className="capability-definition">{node?.definition || capability.overview}</p>
         {node ? <p>{node.explanation}</p> : null}
 
@@ -39,7 +40,7 @@ function DetailPanel({ capability, node, onClose }) {
         {relatedNodes.length ? <section><h4>关联知识</h4><div className="capability-chip-list">{relatedNodes.map((item) => <span key={item.id}>{item.nameZh} · {item.name}</span>)}</div></section> : null}
         <section><h4>实践证据</h4><p>{node?.evidence || `能力网络来自${capability.evidenceContext}中的真实问题、技术方案和验证结果。`}</p></section>
         {relatedProjects.length ? <section><h4>相关项目</h4>{relatedProjects.map((project) => <Link className="capability-related-link" key={project.id} to={`/projects/${project.slug}`}><span>{project.typeLabel}</span><strong>{project.title}</strong></Link>)}</section> : null}
-        {outputs.length ? <section><h4>成果输出</h4>{outputs.map((output) => <Link className="capability-related-link" key={output.id} to={`/projects/${output.projectSlug}`}><span>{output.type}</span><strong>{output.title}</strong></Link>)}</section> : null}
+        {outputs.length ? <section><h4>成果输出</h4>{outputs.map((output) => <Link className="capability-related-link" key={output.id} to={`/projects/${output.projectSlug}`}><span>{outputTypeLabels[output.type] || output.type}</span><strong>{output.title}</strong></Link>)}</section> : null}
         {blogs.length ? <section><h4>相关博客</h4>{blogs.map((post) => <Link className="capability-related-link" key={post.slug} to={`/blog/${post.slug}`}><span>{post.category}</span><strong>{post.title}</strong></Link>)}</section> : null}
       </div>
     </aside>
@@ -116,25 +117,25 @@ export function CapabilityPage() {
     <article className="capability-page">
       <header className="capability-page-header">
         <Link className="capability-back" to="/#focus"><ArrowLeft size={18} /> 能力领域</Link>
-        <div><p className="signal-label">CAPABILITY KNOWLEDGE MAP / {capability.number}</p><h1>{capability.title}</h1><span>{capability.description}</span></div>
+        <div><p className="signal-label">CAPABILITY KNOWLEDGE MAP / {capability.number}</p><h1>{capability.titleZh}</h1><span>{capability.title} · {capability.description}</span></div>
         <div className="capability-controls">
           <div className="capability-search">
             <MagnifyingGlass size={17} />
             <input aria-label="搜索知识节点" onChange={(event) => setQuery(event.target.value)} placeholder="搜索节点" value={query} />
             {searchResults.length ? <div className="capability-search-results">{searchResults.map((node) => <button key={node.id} onClick={() => { selectNode(node.id); setQuery(""); }} type="button"><strong>{node.name}</strong><span>{node.nameZh}</span></button>)}</div> : null}
           </div>
-          <button className="capability-control-button" onClick={() => setResetSignal((value) => value + 1)} title="重置视角" type="button"><ArrowsClockwise size={18} /><span>Reset View</span></button>
-          <button className="capability-control-button" onClick={() => setManualPaused((value) => !value)} title={manualPaused ? "开始旋转" : "暂停旋转"} type="button">{manualPaused ? <Play size={18} /> : <Pause size={18} />}<span>{manualPaused ? "Start" : "Pause"}</span></button>
+          <button className="capability-control-button" onClick={() => setResetSignal((value) => value + 1)} title="重置视角" type="button"><ArrowsClockwise size={18} /><span>重置视角</span></button>
+          <button className="capability-control-button" onClick={() => setManualPaused((value) => !value)} title={manualPaused ? "开始旋转" : "暂停旋转"} type="button">{manualPaused ? <Play size={18} /> : <Pause size={18} />}<span>{manualPaused ? "开始旋转" : "暂停旋转"}</span></button>
         </div>
-        <div className="capability-stats"><span><strong>{capability.nodes.length}</strong> Nodes</span><span><strong>{capability.links.length}</strong> Relations</span></div>
+        <div className="capability-stats"><span><strong>{capability.nodes.length}</strong> 个节点</span><span><strong>{capability.links.length}</strong> 条关系</span></div>
       </header>
 
       <div className={`capability-workspace${mobileDetailOpen ? " is-detail-open" : ""}`}>
         <section className="capability-scene" tabIndex="0" aria-label={`${capability.title} 三维知识图谱，拖动旋转，滚轮缩放`}>
-          <Suspense fallback={<div className="sphere-loading"><i />BUILDING KNOWLEDGE SPHERE...</div>}>
+          <Suspense fallback={<div className="sphere-loading"><i />正在构建知识图谱...</div>}>
             <KnowledgeSphere capability={capability} manualPaused={manualPaused || interactionPaused} onHover={() => undefined} onInteraction={handleInteraction} onSelect={selectNode} resetSignal={resetSignal} selectedId={selectedId} />
           </Suspense>
-          <div className="capability-scene-hint">DRAG TO ROTATE · SCROLL TO ZOOM · DOUBLE CLICK TO RESET</div>
+          <div className="capability-scene-hint">拖动旋转 · 滚轮缩放 · 双击重置</div>
         </section>
         <DetailPanel capability={capability} node={selectedNode} onClose={() => setMobileDetailOpen(false)} />
       </div>

@@ -4,11 +4,21 @@ const ThemeContext = createContext(null);
 const STORAGE_KEY = "jianglin-portfolio-theme";
 
 function systemTheme() {
+  if (typeof window === "undefined") return "dark";
   return window.matchMedia?.("(prefers-color-scheme: light)").matches ? "light" : "dark";
 }
 
+function storedTheme() {
+  if (typeof window === "undefined") return "system";
+  try {
+    return window.localStorage.getItem(STORAGE_KEY) || "system";
+  } catch {
+    return "system";
+  }
+}
+
 export function ThemeProvider({ children }) {
-  const [mode, setMode] = useState(() => localStorage.getItem(STORAGE_KEY) || "system");
+  const [mode, setMode] = useState(storedTheme);
   const [system, setSystem] = useState(systemTheme);
   const resolvedTheme = mode === "system" ? system : mode;
 
@@ -28,7 +38,11 @@ export function ThemeProvider({ children }) {
     const next = mode === "system" ? "dark" : mode === "dark" ? "light" : "system";
     const commit = () => {
       setMode(next);
-      localStorage.setItem(STORAGE_KEY, next);
+      try {
+        window.localStorage.setItem(STORAGE_KEY, next);
+      } catch {
+        // Theme switching remains available even when storage is blocked.
+      }
     };
     if (document.startViewTransition) document.startViewTransition(commit);
     else commit();
@@ -43,4 +57,3 @@ export function useTheme() {
   if (!value) throw new Error("useTheme must be used inside ThemeProvider");
   return value;
 }
-

@@ -133,7 +133,7 @@ export function CircularBlogGallery({ posts }) {
 
       <div className="circular-gallery-caption" aria-live="polite">
         <div>
-          <p className="signal-label">SELECTED NOTE / {String(activeIndex + 1).padStart(2, "0")}</p>
+          <p className="signal-label">精选文章 / {String(activeIndex + 1).padStart(2, "0")}</p>
           <h3>{activePost.title}</h3>
           <p>{activePost.summary}</p>
         </div>
