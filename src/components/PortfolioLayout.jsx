@@ -30,9 +30,9 @@ export function PortfolioLayout() {
     const sectionMap = [
       { id: "home", href: "/" },
       { id: "focus", href: "/#focus" },
-      { id: "selected-projects", href: "/projects" },
-      { id: "project-experience", href: "/experience" },
-      { id: "ideas", href: "/blog" },
+      { id: "selected-projects", href: "/#selected-projects" },
+      { id: "project-experience", href: "/#project-experience" },
+      { id: "ideas", href: "/#ideas" },
     ];
     let frameId = 0;
 
@@ -61,7 +61,8 @@ export function PortfolioLayout() {
     };
   }, [location.pathname]);
 
-  const routeHref = navigation.find((item) => item.href !== "/" && (location.pathname === item.href || location.pathname.startsWith(`${item.href}/`)))?.href;
+  const routeSection = location.pathname.split("/")[1];
+  const routeHref = navigation.find((item) => item.section === routeSection)?.href;
   const activeHref = location.pathname === "/" ? activeHomeHref : routeHref;
 
   const themeLabel = mode === "system" ? `跟随系统，当前${resolvedTheme === "dark" ? "深色" : "浅色"}` : `${mode === "dark" ? "深色" : "浅色"}主题`;

@@ -15,10 +15,10 @@ export const profile = {
 
 export const navigation = [
   { label: "Home", href: "/", section: "home" },
-  { label: "技能", href: "/#focus", section: "focus" },
-  { label: "Projects", href: "/projects", section: "projects" },
-  { label: "Experience", href: "/experience", section: "experience" },
-  { label: "Blog", href: "/blog", section: "blog" },
+  { label: "Knowledge", href: "/#focus", section: "focus" },
+  { label: "Projects", href: "/#selected-projects", section: "projects" },
+  { label: "Experience", href: "/#project-experience", section: "experience" },
+  { label: "Blog", href: "/#ideas", section: "blog" },
 ];
 
 export const focusAreas = [
